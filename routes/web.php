@@ -25,6 +25,9 @@ Route::get('/tags', function () {
 })->middleware(['auth', 'verified'])->name('tags');
 
 Route::get('/api/tags', [TagController::class, 'index'])->name('tags.index');
+Route::delete('/api/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+Route::post('/api/tags', [TagController::class, 'store'])->name('tags.store');
+Route::put('/api/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
 
 
 

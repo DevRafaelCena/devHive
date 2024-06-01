@@ -3,9 +3,20 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head } from '@inertiajs/vue3'
 import Table from '@/Components/Table.vue'
 import ModalExclusao from '@/Components/ModalExclusao.vue'
+import ModalTag from '@/Pages/Tags/ModalTag.vue'
 import { useTags } from '@/Pages/Tags/useTags'
 
-const { tags, isVisible, selectedItemId, actionsModal, actions } = useTags()
+const {
+    tags,
+    isDeleteModalVisible,
+    isEditModalVisible,
+    selectedItemId,
+    tagData,
+    isEditMode,
+    actionsModalDelete,
+    actionsModalEdit,
+    actions,
+} = useTags()
 
 const tagColumns = [
     { key: 'id', label: 'ID' },
@@ -20,9 +31,22 @@ const tagColumns = [
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Tags
             </h2>
+            <button @click="actions.createItem" class="btn btn-primary">
+                Criar Tag
+            </button>
         </template>
 
-        <ModalExclusao :isVisible="isVisible" :actions="actionsModal" />
+        <ModalExclusao
+            :isVisible="isDeleteModalVisible"
+            :actions="actionsModalDelete"
+        />
+
+        <ModalTag
+            :isVisible="isEditModalVisible"
+            :actions="actionsModalEdit"
+            :tagData="tagData"
+            :isEditMode="isEditMode"
+        />
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -42,3 +66,14 @@ const tagColumns = [
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style scoped>
+.btn {
+    padding: 8px 16px;
+    margin: 0 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+}
+</style>

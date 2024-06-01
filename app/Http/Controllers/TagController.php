@@ -28,7 +28,8 @@ class TagController extends Controller
         ]);
 
         Tag::create($request->all());
-        return redirect()->route('tags.index')->with('success', 'Tag criada com sucesso!');
+        return response()->json(['message' => 'Tag criada com sucesso!']);
+
     }
 
     public function show(Tag $tag)
@@ -44,17 +45,16 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag)
     {
         $request->validate([
-            'nome' => 'required|max:255|unique:tags,nome,'.$tag->id,
-            'status' => 'boolean'
+            'nome' => 'required|max:255|unique:tags,nome,'.$tag->id
         ]);
 
         $tag->update($request->all());
-        return redirect()->route('tags.index')->with('success', 'Tag atualizada com sucesso!');
+        return response()->json(['message' => 'Tag atualizada com sucesso!']);
     }
 
     public function destroy(Tag $tag)
     {
         $tag->delete();
-        return redirect()->route('tags.index')->with('success', 'Tag excluída com sucesso!');
+        return response()->json(null, 204);
     }
 }
