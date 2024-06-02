@@ -3,28 +3,37 @@
         <div v-if="isVisible" class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-                    <div class="modal-header">
-                        <h3>{{ isEditMode ? 'Editar Tag' : 'Criar Tag' }}</h3>
+                    <div v-if="loading" role="status" class="modal-body">
+                        <div class="spinner-container">
+                            <Spinner />
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <label for="tagName">Nome:</label>
-                        <input
-                            id="tagName"
-                            type="text"
-                            v-model="tag.nome"
-                            class="input"
-                        />
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            @click="actions.fechar"
-                            class="btn btn-secondary"
-                        >
-                            Cancelar
-                        </button>
-                        <button @click="handleSave" class="btn btn-primary">
-                            {{ isEditMode ? 'Salvar' : 'Criar' }}
-                        </button>
+                    <div v-else>
+                        <div class="modal-header">
+                            <h3>
+                                {{ isEditMode ? 'Editar Tag' : 'Criar Tag' }}
+                            </h3>
+                        </div>
+                        <div class="modal-body">
+                            <label for="tagName">Nome:</label>
+                            <input
+                                id="tagName"
+                                type="text"
+                                v-model="tag.nome"
+                                class="input"
+                            />
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                @click="props.actions.fechar"
+                                class="btn btn-secondary"
+                            >
+                                Cancelar
+                            </button>
+                            <button @click="handleSave" class="btn btn-primary">
+                                {{ isEditMode ? 'Salvar' : 'Criar' }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -33,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import Spinner from '@/Components/Spinner.vue'
 import { defineProps, defineEmits, ref, watch } from 'vue'
 
 interface TableActions {
@@ -50,6 +60,7 @@ const props = defineProps<{
 const emits = defineEmits(['update:isVisible'])
 
 const tag = ref({ id: null, nome: '' })
+const loading = ref(false)
 
 watch(
     () => props.tagData,
@@ -59,8 +70,13 @@ watch(
     { immediate: true },
 )
 
-const handleSave = () => {
-    props.actions.salvar(tag.value)
+const handleSave = async () => {
+    loading.value = true
+    try {
+        await props.actions.salvar(tag.value)
+    } finally {
+        loading.value = false
+    }
 }
 </script>
 
@@ -122,5 +138,12 @@ const handleSave = () => {
     margin-top: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px; /* Ajuste a altura conforme necessário */
 }
 </style>
